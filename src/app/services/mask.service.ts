@@ -38,24 +38,24 @@ export class MaskService {
   }
 
   addWashToMask(id: number): Observable<any>{
-    let headers = new HttpHeaders({
+    const headers = new HttpHeaders({
       'Content-Type':  'application/json',
     });
-    return this.httpClient.put(this.urlBack + "mask/" + id + "/" + "wash",{} , {headers});
+    return this.httpClient.post(this.urlBack + "mask/" + id + "/" + "wash",{} , {headers});
   }
 
   sousWashToMask(id: number): Observable<any>{
-    let headers = new HttpHeaders({
+    const headers = new HttpHeaders({
       'Content-Type':  'application/json',
     });
-    return this.httpClient.put(this.urlBack + "mask/" + id + "/" + "diswash",{} , {headers});
+    return this.httpClient.post(this.urlBack + "mask/" + id + "/" + "diswash",{} , {headers});
   }
 
   deleteMask(id: number): Observable<any>{
     let headers = new HttpHeaders({
       'Content-Type':  'application/json',
     });
-    return this.httpClient.delete(this.urlBack + "mask/" + id,{responseType: 'text'});
+    return this.httpClient.post(this.urlBack + "mask/" + id,{},{responseType: 'text'});
   }
 
 

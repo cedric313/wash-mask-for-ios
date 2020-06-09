@@ -639,7 +639,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
     /*! @angular/common/http */
-    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/http.js"); //const AUTH_API = 'http://localhost:8082/api/auth/';
+    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/http.js"); // const AUTH_API = 'http://localhost:8082/api/auth/';
 
 
     var AUTH_API = 'https://mask-wash-back-end.herokuapp.com/api/auth/';

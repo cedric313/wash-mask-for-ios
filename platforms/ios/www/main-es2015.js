@@ -1340,7 +1340,7 @@ let FamilymembersService = class FamilymembersService {
         return this.httpClient.get(this.urlBack + "user/" + this.userService.user.id);
     }
     deleteMember(id) {
-        return this.httpClient.delete(this.urlBack + "family_members/delete/" + id, { responseType: 'text' });
+        return this.httpClient.post(this.urlBack + "family_members/delete/" + id, {}, { responseType: 'text' });
     }
     getFirstName(id) {
         return this.httpClient.get(this.urlBack + "family_members/first_name/" + id, { responseType: 'text' });
@@ -1405,22 +1405,22 @@ let MaskService = class MaskService {
         return this.httpClient.get(this.urlBack + "mask/" + id);
     }
     addWashToMask(id) {
-        let headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+        const headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
             'Content-Type': 'application/json',
         });
-        return this.httpClient.put(this.urlBack + "mask/" + id + "/" + "wash", {}, { headers });
+        return this.httpClient.post(this.urlBack + "mask/" + id + "/" + "wash", {}, { headers });
     }
     sousWashToMask(id) {
-        let headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+        const headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
             'Content-Type': 'application/json',
         });
-        return this.httpClient.put(this.urlBack + "mask/" + id + "/" + "diswash", {}, { headers });
+        return this.httpClient.post(this.urlBack + "mask/" + id + "/" + "diswash", {}, { headers });
     }
     deleteMask(id) {
         let headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
             'Content-Type': 'application/json',
         });
-        return this.httpClient.delete(this.urlBack + "mask/" + id, { responseType: 'text' });
+        return this.httpClient.post(this.urlBack + "mask/" + id, {}, { responseType: 'text' });
     }
 };
 MaskService.ctorParameters = () => [
@@ -1630,7 +1630,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/cedric/Documents/angular/wash-mask-front-end/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/cedric/Documents/ionic/wash-mask-for-ios/src/main.ts */"./src/main.ts");
 
 
 /***/ })

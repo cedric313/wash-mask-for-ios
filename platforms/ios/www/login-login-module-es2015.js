@@ -397,7 +397,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-//const AUTH_API = 'http://localhost:8082/api/auth/';
+// const AUTH_API = 'http://localhost:8082/api/auth/';
 const AUTH_API = 'https://mask-wash-back-end.herokuapp.com/api/auth/';
 const httpOptions = {
     headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({ 'Content-Type': 'application/json' })

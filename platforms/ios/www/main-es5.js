@@ -1764,7 +1764,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "deleteMember",
         value: function deleteMember(id) {
-          return this.httpClient["delete"](this.urlBack + "family_members/delete/" + id, {
+          return this.httpClient.post(this.urlBack + "family_members/delete/" + id, {}, {
             responseType: 'text'
           });
         }
@@ -1876,7 +1876,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
             'Content-Type': 'application/json'
           });
-          return this.httpClient.put(this.urlBack + "mask/" + id + "/" + "wash", {}, {
+          return this.httpClient.post(this.urlBack + "mask/" + id + "/" + "wash", {}, {
             headers: headers
           });
         }
@@ -1886,7 +1886,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
             'Content-Type': 'application/json'
           });
-          return this.httpClient.put(this.urlBack + "mask/" + id + "/" + "diswash", {}, {
+          return this.httpClient.post(this.urlBack + "mask/" + id + "/" + "diswash", {}, {
             headers: headers
           });
         }
@@ -1896,7 +1896,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
             'Content-Type': 'application/json'
           });
-          return this.httpClient["delete"](this.urlBack + "mask/" + id, {
+          return this.httpClient.post(this.urlBack + "mask/" + id, {}, {
             responseType: 'text'
           });
         }
@@ -2211,7 +2211,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   /***/
   function _(module, exports, __webpack_require__) {
     module.exports = __webpack_require__(
-    /*! /Users/cedric/Documents/angular/wash-mask-front-end/src/main.ts */
+    /*! /Users/cedric/Documents/ionic/wash-mask-for-ios/src/main.ts */
     "./src/main.ts");
     /***/
   }

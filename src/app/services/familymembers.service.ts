@@ -35,7 +35,7 @@ export class FamilymembersService {
   }
 
   deleteMember(id: number): Observable<any>{
-    return this.httpClient.delete(this.urlBack + "family_members/delete/" + id,{responseType: 'text'});
+    return this.httpClient.post(this.urlBack + "family_members/delete/" + id,{},{responseType: 'text'});
   }
 
   getFirstName(id: number): Observable<any>{
