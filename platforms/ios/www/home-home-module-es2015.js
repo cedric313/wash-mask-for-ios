@@ -9,7 +9,7 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ion-header>\n    <ion-toolbar>\n        <ion-buttons slot=\"start\">\n            <ion-menu-button></ion-menu-button>\n        </ion-buttons>\n        <ion-title>\n            Hello {{user['username']}}\n        </ion-title>\n    </ion-toolbar>\n</ion-header>\n<ion-content>\n    <ion-item *ngIf=\"familyMemberfromDb.size >= 0\">Click on family member</ion-item>\n        <ion-list *ngFor=\"let family of familyMemberfromDb.familyMembers; let i = index\">\n            <ion-card [button]=\"true\" (click)=\"goMask(family.id)\">\n                <ion-card-header>\n                    <ion-card-title>{{family.firstName}}</ion-card-title>\n                </ion-card-header>\n            </ion-card>\n        </ion-list>\n</ion-content>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ion-header>\n    <ion-toolbar>\n        <ion-buttons slot=\"start\">\n            <ion-menu-button></ion-menu-button>\n        </ion-buttons>\n        <ion-title>\n            Family members\n        </ion-title>\n    </ion-toolbar>\n</ion-header>\n\n    <ion-content>\n        <ion-fab horizontal=\"end\" slot=\"fixed\" vertical=\"bottom\">\n            <ion-fab-button (click)=\"wantCreateMemberFamily()\" color=\"success\" style=\"width: 33px; height: 33px\">\n                <ion-icon name=\"person-add-outline\"></ion-icon>\n            </ion-fab-button>\n        </ion-fab>\n\n        <ion-card *ngIf=\"isWantCreateMemberFamily\">\n            <form [formGroup]=\"familyMembersCreateValidator\">\n                <ion-item>\n                    <ion-label>\n                        <ion-icon name=\"person\"></ion-icon>\n                    </ion-label>\n                    <ion-input [(ngModel)]=\"member.firstName\" formControlName=\"name\" placeholder=\"First name\"\n                               type=\"text\"></ion-input>\n                </ion-item>\n                <div style=\"display: flex; align-items: center; align-content: center; justify-content: center\">\n                    <ion-button (click)=\"createFamilyMember()\" [disabled]=\"!familyMembersCreateValidator.valid\" color=\"success\"\n                                shape=\"round\">Create member family\n                    </ion-button>\n                </div>\n            </form>\n        </ion-card>\n\n        <ion-list *ngFor=\"let family of familyMembersFromDb; let i = index\"\n                  [ngStyle]=\"{'filter':isWantCreateMemberFamily === true ? 'blur(4px)' : 'blur(0px)' }\">\n            <ion-card (click)=\"goMask(family.id)\">\n                <ion-card-header>\n                    <div style=\"display: flex; justify-content: space-between; align-items: center\">\n                        <ion-card-title>Mask(s) of {{family.firstName}}</ion-card-title>\n                        <ion-button (click)=\"showAlertDeletedMember(family.id)\" color=\"danger\" style=\"font-size: 10px\">\n                            <ion-icon name=\"trash\" style=\"font-size: 20px\"></ion-icon>\n                        </ion-button>\n                    </div>\n                </ion-card-header>\n            </ion-card>\n        </ion-list>\n    </ion-content>\n");
 
 /***/ }),
 
@@ -85,7 +85,8 @@ HomePageModule = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
             _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormsModule"],
             _ionic_angular__WEBPACK_IMPORTED_MODULE_3__["IonicModule"],
             _home_routing_module__WEBPACK_IMPORTED_MODULE_6__["HomePageRoutingModule"],
-            _family_family_module__WEBPACK_IMPORTED_MODULE_7__["FamilyPageModule"]
+            _family_family_module__WEBPACK_IMPORTED_MODULE_7__["FamilyPageModule"],
+            _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ReactiveFormsModule"]
         ],
         declarations: [_home_page__WEBPACK_IMPORTED_MODULE_5__["HomePage"]]
     })
@@ -124,6 +125,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/user.service */ "./src/app/services/user.service.ts");
 /* harmony import */ var _services_familymembers_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/familymembers.service */ "./src/app/services/familymembers.service.ts");
 /* harmony import */ var _services_mask_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../services/mask.service */ "./src/app/services/mask.service.ts");
+/* harmony import */ var _FamilyMembers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../FamilyMembers */ "./src/app/FamilyMembers.ts");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @ionic/angular */ "./node_modules/@ionic/angular/__ivy_ngcc__/fesm2015/ionic-angular.js");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/__ivy_ngcc__/fesm2015/forms.js");
+
+
+
 
 
 
@@ -131,17 +138,48 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let HomePage = class HomePage {
-    constructor(userService, familymembersService, maskService, router) {
-        this.userService = userService;
+    constructor(familymembersService, userService, maskService, router, alertCtrl, formBuilder, loadingController, toastController) {
         this.familymembersService = familymembersService;
+        this.userService = userService;
         this.maskService = maskService;
         this.router = router;
+        this.alertCtrl = alertCtrl;
+        this.formBuilder = formBuilder;
+        this.loadingController = loadingController;
+        this.toastController = toastController;
         this.user = {};
+        this.member = new _FamilyMembers__WEBPACK_IMPORTED_MODULE_6__["FamilyMembers"]();
+        this.buttonText = "Back";
+        this.buttonIcon = "arrow-back";
+        this.isWantCreateMemberFamily = false;
+        this.isLoading = false;
+        {
+            this.familyMembersCreateValidator = this.formBuilder.group({
+                name: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_8__["Validators"].required]
+            });
+        }
     }
     ngOnInit() {
         this.user = this.userService.user;
         console.log(this.userService.user.familyMembers);
-        this.familyMemberfromDb = this.userService.user;
+        this.getAllFamilyMembers();
+    }
+    getAllFamilyMembers() {
+        this.present();
+        const subscription = this.familymembersService.findFamilyMembers().subscribe(value => { console.log(value), this.familyMembersFromDb = value; }, error => { this.dismiss(), this.presentToast(error, 2000); }, () => { this.dismiss(), subscription.unsubscribe(); });
+    }
+    createFamilyMember() {
+        this.present();
+        const subscription = this.familymembersService.createFamilyMember(this.member).subscribe(value => this.userService.user.familyMembers.push(value), error => {
+            this.dismiss(),
+                this.presentToast(error, 2000);
+        }, () => {
+            this.dismiss(),
+                this.member.firstName = "",
+                this.isWantCreateMemberFamily = false,
+                this.getAllFamilyMembers(),
+                subscription.unsubscribe();
+        });
     }
     goMask(index) {
         this.maskService.idMemberFamilyToCreateMask = index;
@@ -149,12 +187,90 @@ let HomePage = class HomePage {
         console.log(this.maskService.idMemberFamilyToCreateMask);
         this.router.navigateByUrl('mask');
     }
+    wantCreateMemberFamily() {
+        this.isWantCreateMemberFamily = !this.isWantCreateMemberFamily;
+    }
+    deleteMember(idMember) {
+        let reset = [];
+        this.present();
+        const subscription = this.familymembersService.deleteMember(idMember).subscribe(response => { this.userService.user.familyMembers = reset; }, error => {
+            this.dismiss(),
+                console.log(error),
+                this.presentToast(error, 2000);
+        }, () => {
+            this.getAllFamilyMembers(),
+                this.dismiss(),
+                subscription.unsubscribe();
+        });
+    }
+    presentToast(message, duration) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            const toast = yield this.toastController.create({
+                message: message,
+                duration: duration
+            });
+            toast.present();
+        });
+    }
+    showAlertDeletedMember(idMember) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            const confirm = yield this.alertCtrl.create({
+                header: 'Delete member family',
+                message: 'Are you sure?',
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        role: 'cancel',
+                        handler: () => {
+                            console.log('Confirm Cancel');
+                        }
+                    },
+                    {
+                        text: 'Okay',
+                        handler: () => {
+                            {
+                                this.deleteMember(idMember),
+                                    console.log("confirm user");
+                            }
+                            ;
+                        }
+                    }
+                ]
+            });
+            yield confirm.present();
+        });
+    }
+    present() {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            this.isLoading = true;
+            return yield this.loadingController.create({
+            // duration: 5000,
+            }).then(a => {
+                a.present().then(() => {
+                    console.log('presented');
+                    if (!this.isLoading) {
+                        a.dismiss().then(() => console.log('abort presenting'));
+                    }
+                });
+            });
+        });
+    }
+    dismiss() {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            this.isLoading = false;
+            return yield this.loadingController.dismiss().then(() => console.log('dismissed'));
+        });
+    }
 };
 HomePage.ctorParameters = () => [
-    { type: _services_user_service__WEBPACK_IMPORTED_MODULE_3__["UserService"] },
     { type: _services_familymembers_service__WEBPACK_IMPORTED_MODULE_4__["FamilymembersService"] },
+    { type: _services_user_service__WEBPACK_IMPORTED_MODULE_3__["UserService"] },
     { type: _services_mask_service__WEBPACK_IMPORTED_MODULE_5__["MaskService"] },
-    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] }
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] },
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["AlertController"] },
+    { type: _angular_forms__WEBPACK_IMPORTED_MODULE_8__["FormBuilder"] },
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["LoadingController"] },
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"] }
 ];
 HomePage = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -162,10 +278,14 @@ HomePage = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
         template: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"])(__webpack_require__(/*! raw-loader!./home.page.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/home/home.page.html")).default,
         styles: [Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"])(__webpack_require__(/*! ./home.page.scss */ "./src/app/home/home.page.scss")).default]
     }),
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [_services_user_service__WEBPACK_IMPORTED_MODULE_3__["UserService"],
-        _services_familymembers_service__WEBPACK_IMPORTED_MODULE_4__["FamilymembersService"],
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [_services_familymembers_service__WEBPACK_IMPORTED_MODULE_4__["FamilymembersService"],
+        _services_user_service__WEBPACK_IMPORTED_MODULE_3__["UserService"],
         _services_mask_service__WEBPACK_IMPORTED_MODULE_5__["MaskService"],
-        _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
+        _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"],
+        _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["AlertController"],
+        _angular_forms__WEBPACK_IMPORTED_MODULE_8__["FormBuilder"],
+        _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["LoadingController"],
+        _ionic_angular__WEBPACK_IMPORTED_MODULE_7__["ToastController"]])
 ], HomePage);
 
 

@@ -1,53 +1,71 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button
-              [text]="buttonText"
-              [icon]="buttonIcon">
-      </ion-back-button>
-    </ion-buttons>
-    <ion-title>{{firstNameMember}}'s mask</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button
+                    [icon]="buttonIcon"
+                    [text]="buttonText">
+            </ion-back-button>
+        </ion-buttons>
+        <ion-title>{{firstNameMember}}'s mask</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button style="width: 33px; height: 33px" (click)="wantCreateMask()" color="success">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+        <ion-fab-button (click)="wantCreateMask()" color="success" style="width: 33px; height: 33px">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
 
-  <ion-card *ngIf="isWantCreateMask">
-    <form [formGroup]="createMaskValidator">
-    <ion-item>
-      <ion-label> <ion-icon name="medkit"></ion-icon> </ion-label>
-      <ion-input formControlName="name" placeholder="Nom du masque" [(ngModel)]="mask.name"  type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label> <ion-icon name="repeat"></ion-icon> </ion-label>
-      <ion-input formControlName="numberWash" placeholder="Nombre max de lavage" [(ngModel)]="mask.maxWashingMask"  type="number"></ion-input>
-    </ion-item>
-    <div style="display: flex; align-items: center; align-content: center; justify-content: center">
-      <ion-button [disabled]="!createMaskValidator.valid" color="success" shape="round" (click)="createMask()">Create mask</ion-button>
-    </div>
-    </form>
-  </ion-card>
-  <ion-list *ngFor="let mask of masksOfMember; let i = index"
-            [ngStyle]="{'filter':isWantCreateMask === true ? 'blur(4px)' : 'blur(0px)' }">
-    <ion-card>
-      <ion-card-header>
-        <div style="display: flex; justify-content: flex-end" >
-          <ion-button (click)="showAlertDeletedMask(mask.id)" style="font-size: 10px" color="danger"><ion-icon  style="font-size: 20px" name="trash"></ion-icon></ion-button>
-        </div>
-        <ion-card-title>{{mask.name}} : lavages max {{mask.maxWashingMask}} </ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Vous avez fait {{mask.numberWash}} lavages.
-      </ion-card-content>
-      <div style="display: flex; flex-direction: row; justify-content: center">
-        <ion-button color="success" [disabled]="isSubmit" (click)="addWashToMask(mask.id)">+1 lavage</ion-button>
-        <ion-button color="danger" [disabled]="isSubmit || mask.numberWash < 1" (click)="sousWashToMask(mask.id)">-1 lavage</ion-button>
-      </div>
+    <ion-card *ngIf="isWantCreateMask">
+        <form [formGroup]="createMaskValidator">
+            <ion-item>
+                <ion-label>
+                    <ion-icon name="medkit"></ion-icon>
+                </ion-label>
+                <ion-input [(ngModel)]="mask.name" formControlName="name" placeholder="Mask's name"
+                           type="text"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label>
+                    <ion-icon name="repeat"></ion-icon>
+                </ion-label>
+                <ion-input [(ngModel)]="mask.maxWashingMask" formControlName="numberWash"
+                           placeholder="Max number of washing" type="number"></ion-input>
+            </ion-item>
+            <div style="display: flex; align-items: center; align-content: center; justify-content: center">
+                <ion-button (click)="createMask()" [disabled]="!createMaskValidator.valid" color="success"
+                            shape="round">Create mask
+                </ion-button>
+            </div>
+        </form>
     </ion-card>
-  </ion-list>
+    <ion-list *ngFor="let mask of masksOfMember; let i = index"
+              [ngStyle]="{'filter':isWantCreateMask === true ? 'blur(4px)' : 'blur(0px)' }">
+        <ion-card [ngStyle]="{'background-color':mask.maxWashingMask === mask.numberWash ? 'red' : 'white' }">
+            <ion-card-header>
+                <div style="display: flex;flex-direction: row; justify-content: space-between;">
+                    <ion-card-title style="display: flex; justify-content: center"> Mask {{mask.name}}</ion-card-title>
+                    <ion-button (click)="showAlertDeletedMask(mask.id)" color="danger" style="font-size: 10px">
+                        <ion-icon name="trash" style="font-size: 20px"></ion-icon>
+                    </ion-button>
+                </div>
+                <div style="display: flex;flex-direction: row; justify-content: space-between; align-items: center">
+                    <ion-card-subtitle>Washs max {{mask.maxWashingMask}} </ion-card-subtitle>
+                </div>
+            </ion-card-header>
+            <ion-card-content style="display: flex; justify-content: space-around">
+                    <div *ngIf="mask.maxWashingMask !== mask.numberWash">You did {{mask.numberWash}} washes.</div>
+                    <div *ngIf="mask.maxWashingMask === mask.numberWash">You must throw away your mask</div>
+            </ion-card-content>
+
+            <div style="display: flex; flex-direction: row; justify-content: center">
+                <ion-button (click)="addWashToMask(mask.id)" [disabled]="isSubmit ||  mask.maxWashingMask === mask.numberWash " color="success">+1 wash
+                </ion-button>
+                <ion-button (click)="sousWashToMask(mask.id)" [disabled]="isSubmit || mask.numberWash < 1"
+                            color="danger">-1 wash
+                </ion-button>
+            </div>
+        </ion-card>
+    </ion-list>
 </ion-content>

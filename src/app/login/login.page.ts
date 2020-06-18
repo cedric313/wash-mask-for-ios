@@ -73,8 +73,8 @@ export class LoginPage implements OnInit {
                 this.isSignUpFailed = false;
             },
             err => {
-                this.presentToast(err.error.message, 2000)
                 this.errorMessage = err.error.message;
+                this.presentToast(err.error.message, 2000)
                 this.isSignUpFailed = true;
                 this.dismiss();
                 subscription.unsubscribe();
@@ -82,9 +82,9 @@ export class LoginPage implements OnInit {
             () => {
                 this.presentToast('Account created, please check your Mail box', 2000),
                     this.dismiss();
-                this.isAccountExist = !this.isAccountExist;
-                // this.onSubmitSignIn();
-                subscription.unsubscribe();
+                    this.isAccountExist = !this.isAccountExist;
+                    //this.onSubmitSignIn();
+                    subscription.unsubscribe();
             }
         );
     }
@@ -96,7 +96,6 @@ export class LoginPage implements OnInit {
             data => {
                 this.tokenStorage.saveToken(data.accessToken);
                 this.tokenStorage.saveUser(data);
-
                 this.isLoginFailed = false;
                 this.isLoggedIn = true;
                 this.roles = this.tokenStorage.getUser().roles;
@@ -112,7 +111,7 @@ export class LoginPage implements OnInit {
             },
            () => {
                 this.dismiss();
-               subscription.unsubscribe();
+                subscription.unsubscribe();
            }
         );
     }
@@ -136,7 +135,7 @@ export class LoginPage implements OnInit {
             () => {
                 this.checkIfIsConnected(this.userService.user.authError),
                     this.dismiss();
-                subscription.unsubscribe()
+                    subscription.unsubscribe()
             });
     }
 
@@ -146,8 +145,9 @@ export class LoginPage implements OnInit {
         userToLog.password = this.user.password;
         userToLog.pseudo = this.user.pseudo;
         const subscription = this.userService.createAccount(userToLog).subscribe(
-            value => {this.userService.user = value,
-            console.log(value)},
+            value => {
+                this.userService.user = value,
+                console.log(value)},
             error => {
                 this.presentToast(error.error.message,2000),
                 this.dismiss();

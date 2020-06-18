@@ -4,17 +4,46 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>
-            Hello {{user['username']}}
+            Family members
         </ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content>
-    <ion-item *ngIf="familyMemberfromDb.size >= 0">Click on family member</ion-item>
-        <ion-list *ngFor="let family of familyMemberfromDb.familyMembers; let i = index">
-            <ion-card [button]="true" (click)="goMask(family.id)">
+
+    <ion-content>
+        <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+            <ion-fab-button (click)="wantCreateMemberFamily()" color="success" style="width: 33px; height: 33px">
+                <ion-icon name="person-add-outline"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+
+        <ion-card *ngIf="isWantCreateMemberFamily">
+            <form [formGroup]="familyMembersCreateValidator">
+                <ion-item>
+                    <ion-label>
+                        <ion-icon name="person"></ion-icon>
+                    </ion-label>
+                    <ion-input [(ngModel)]="member.firstName" formControlName="name" placeholder="First name"
+                               type="text"></ion-input>
+                </ion-item>
+                <div style="display: flex; align-items: center; align-content: center; justify-content: center">
+                    <ion-button (click)="createFamilyMember()" [disabled]="!familyMembersCreateValidator.valid" color="success"
+                                shape="round">Create member family
+                    </ion-button>
+                </div>
+            </form>
+        </ion-card>
+
+        <ion-list *ngFor="let family of familyMembersFromDb; let i = index"
+                  [ngStyle]="{'filter':isWantCreateMemberFamily === true ? 'blur(4px)' : 'blur(0px)' }">
+            <ion-card (click)="goMask(family.id)">
                 <ion-card-header>
-                    <ion-card-title>{{family.firstName}}</ion-card-title>
+                    <div style="display: flex; justify-content: space-between; align-items: center">
+                        <ion-card-title>Mask(s) of {{family.firstName}}</ion-card-title>
+                        <ion-button (click)="showAlertDeletedMember(family.id)" color="danger" style="font-size: 10px">
+                            <ion-icon name="trash" style="font-size: 20px"></ion-icon>
+                        </ion-button>
+                    </div>
                 </ion-card-header>
             </ion-card>
         </ion-list>
-</ion-content>
+    </ion-content>

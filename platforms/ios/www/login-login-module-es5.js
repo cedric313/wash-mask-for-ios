@@ -351,9 +351,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _this.isSuccessful = true;
             _this.isSignUpFailed = false;
           }, function (err) {
+            _this.errorMessage = err.error.message;
+
             _this.presentToast(err.error.message, 2000);
 
-            _this.errorMessage = err.error.message;
             _this.isSignUpFailed = true;
 
             _this.dismiss();
@@ -361,7 +362,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             subscription.unsubscribe();
           }, function () {
             _this.presentToast('Account created, please check your Mail box', 2000), _this.dismiss();
-            _this.isAccountExist = !_this.isAccountExist; // this.onSubmitSignIn();
+            _this.isAccountExist = !_this.isAccountExist; //this.onSubmitSignIn();
 
             subscription.unsubscribe();
           });

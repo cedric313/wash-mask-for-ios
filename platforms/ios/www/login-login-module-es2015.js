@@ -212,8 +212,8 @@ let LoginPage = class LoginPage {
             this.isSuccessful = true;
             this.isSignUpFailed = false;
         }, err => {
-            this.presentToast(err.error.message, 2000);
             this.errorMessage = err.error.message;
+            this.presentToast(err.error.message, 2000);
             this.isSignUpFailed = true;
             this.dismiss();
             subscription.unsubscribe();
@@ -221,7 +221,7 @@ let LoginPage = class LoginPage {
             this.presentToast('Account created, please check your Mail box', 2000),
                 this.dismiss();
             this.isAccountExist = !this.isAccountExist;
-            // this.onSubmitSignIn();
+            //this.onSubmitSignIn();
             subscription.unsubscribe();
         });
     }
